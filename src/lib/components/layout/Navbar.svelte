@@ -40,6 +40,7 @@
 
 	let showShareChatModal = false;
 	let showDownloadChatModal = false;
+	let showSettings = false;
 </script>
 
 <ShareChatModal bind:show={showShareChatModal} chatId={$chatId} />
@@ -80,6 +81,7 @@
 				{/if}
 			</div>
 
+			{#if showSettings}
 			<div class="self-start flex flex-none items-center text-gray-600 dark:text-gray-400">
 				<!-- <div class="md:hidden flex self-center w-[1px] h-5 mx-2 bg-gray-300 dark:bg-stone-700" /> -->
 				{#if shareEnabled && chat && (chat.id || $temporaryChatEnabled)}
@@ -190,6 +192,7 @@
 					</UserMenu>
 				{/if}
 			</div>
+			{/if}
 		</div>
 	</div>
 </div>
