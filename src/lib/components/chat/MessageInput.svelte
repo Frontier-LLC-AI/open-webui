@@ -83,6 +83,7 @@
 
 	let loaded = false;
 	let recording = false;
+	let duplexSpeechEnabled = false;
 
 	let chatInputContainerElement;
 	let chatInputElement;
@@ -1246,7 +1247,7 @@
 										{/if}
 
 										{#if !history.currentId || history.messages[history.currentId]?.done == true}
-											{#if prompt === '' && files.length === 0}
+											{#if prompt === '' && files.length === 0 && duplexSpeechEnabled}
 												<div class=" flex items-center">
 													<Tooltip content={$i18n.t('Call')}>
 														<button
