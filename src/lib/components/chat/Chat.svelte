@@ -1979,6 +1979,11 @@
 						</div>
 
 						<div class=" pb-[1rem]">
+							<div class="max-w-6xl pb-2 px-6 mx-auto inset-x-0 text-green-500">
+								{#each selectedModels as item, index}
+									{item}
+								{/each}
+							</div>
 							<MessageInput
 								{history}
 								{selectedModels}
