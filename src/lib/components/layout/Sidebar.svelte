@@ -565,7 +565,7 @@
 			</div>
 		{/if} -->
 
-		{#if !workspaceDisabled && ($user?.role === 'admin' || $user?.permissions?.workspace?.models || $user?.permissions?.workspace?.knowledge || $user?.permissions?.workspace?.prompts || $user?.permissions?.workspace?.tools)}
+		{#if $user?.role === 'admin' || $user?.permissions?.workspace?.models || $user?.permissions?.workspace?.knowledge || $user?.permissions?.workspace?.prompts || $user?.permissions?.workspace?.tools}
 			<div class="px-1.5 flex justify-center text-gray-800 dark:text-gray-200">
 				<a
 					class="grow flex items-center space-x-3 rounded-lg px-2 py-[7px] hover:bg-gray-100 dark:hover:bg-gray-900 transition"
@@ -580,6 +580,7 @@
 					}}
 					draggable="false"
 				>
+					{#if !workspaceDisabled}
 					<div class="self-center">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -600,6 +601,7 @@
 					<div class="flex self-center translate-y-[0.5px]">
 						<div class=" self-center font-medium text-sm font-primary">{$i18n.t('Workspace')}</div>
 					</div>
+					{/if}
 				</a>
 			</div>
 		{/if}

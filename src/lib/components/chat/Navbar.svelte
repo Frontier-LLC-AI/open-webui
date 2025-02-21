@@ -39,7 +39,7 @@
 
 	let showShareChatModal = false;
 	let showDownloadChatModal = false;
-	let showSettings = false;
+	let showSettings = $user.role === 'admin';
 </script>
 
 <ShareChatModal bind:show={showShareChatModal} chatId={$chatId} />
