@@ -39,6 +39,7 @@
 
 	let showShareChatModal = false;
 	let showDownloadChatModal = false;
+	let showFullSettings = $user.role === 'admin';
 </script>
 
 <ShareChatModal bind:show={showShareChatModal} chatId={$chatId} />
@@ -81,7 +82,7 @@
 
 			<div class="self-start flex flex-none items-center text-gray-600 dark:text-gray-400">
 				<!-- <div class="md:hidden flex self-center w-[1px] h-5 mx-2 bg-gray-300 dark:bg-stone-700" /> -->
-				{#if shareEnabled && chat && (chat.id || $temporaryChatEnabled)}
+				{#if showFullSettings && (shareEnabled && chat && (chat.id || $temporaryChatEnabled))}
 					<Menu
 						{chat}
 						{shareEnabled}
@@ -114,7 +115,7 @@
 							</div>
 						</button>
 					</Menu>
-				{:else if $mobile && ($user.role === 'admin' || $user?.permissions?.chat?.controls)}
+				{:else if showFullSettings && ($mobile && ($user.role === 'admin' || $user?.permissions?.chat?.controls))}
 					<Tooltip content={$i18n.t('Controls')}>
 						<button
 							class=" flex cursor-pointer px-2 py-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-850 transition"
@@ -130,7 +131,7 @@
 					</Tooltip>
 				{/if}
 
-				{#if !$mobile && ($user.role === 'admin' || $user?.permissions?.chat?.controls)}
+				{#if showFullSettings && (!$mobile && ($user.role === 'admin' || $user?.permissions?.chat?.controls))}
 					<Tooltip content={$i18n.t('Controls')}>
 						<button
 							class=" flex cursor-pointer px-2 py-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-850 transition"
@@ -163,7 +164,7 @@
 					</button>
 				</Tooltip>
 
-				{#if $user !== undefined}
+				{#if showFullSettings && $user !== undefined}
 					<UserMenu
 						className="max-w-[200px]"
 						role={$user.role}

@@ -85,6 +85,7 @@
 	import Placeholder from './Placeholder.svelte';
 	import NotificationToast from '../NotificationToast.svelte';
 	import Spinner from '../common/Spinner.svelte';
+	import Check from '../icons/Check.svelte';
 
 	export let chatIdProp = '';
 
@@ -1979,6 +1980,14 @@
 						</div>
 
 						<div class=" pb-[1rem]">
+							<div class="max-w-6xl pb-2 px-6 mx-auto inset-x-0 text-green-500">
+								{#each selectedModels as item, index}
+									<div class="flex items-center gap-2">
+										{item}
+										<Check />
+									</div>
+								{/each}
+							</div>
 							<MessageInput
 								{history}
 								{selectedModels}

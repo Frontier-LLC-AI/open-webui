@@ -1,8 +1,8 @@
+import base64
 import json
 import logging
 import os
 import shutil
-import base64
 
 from datetime import datetime
 from pathlib import Path
@@ -11,22 +11,22 @@ from urllib.parse import urlparse
 
 import chromadb
 import requests
-from pydantic import BaseModel
-from sqlalchemy import JSON, Column, DateTime, Integer, func
 
 from open_webui.env import (
     DATA_DIR,
     DATABASE_URL,
     ENV,
     FRONTEND_BUILD_DIR,
+    log,
     OFFLINE_MODE,
     OPEN_WEBUI_DIR,
     WEBUI_AUTH,
     WEBUI_FAVICON_URL,
     WEBUI_NAME,
-    log,
 )
 from open_webui.internal.db import Base, get_db
+from pydantic import BaseModel
+from sqlalchemy import Column, DateTime, func, Integer, JSON
 
 
 class EndpointFilter(logging.Filter):
@@ -110,47 +110,68 @@ DEFAULT_CONFIG = {
         "prompt_suggestions": [
             {
                 "title": [
-                    "Help me study",
-                    "vocabulary for a college entrance exam",
+                    "Ask for information",
+                    "about cell division",
                 ],
-                "content": "Help me study vocabulary: write a sentence for me to fill in the blank, and I'll try to pick the correct option.",
+                "content": "Can you explain the process of cell division, including the stages of prophase, metaphase, anaphase, and telophase?",
             },
             {
                 "title": [
-                    "Give me ideas",
-                    "for what to do with my kids' art",
+                    "Upload images",
+                    "of microscopic organisms",
                 ],
-                "content": "What are 5 creative things I could do with my kids' art? I don't want to throw them away, but it's also so much clutter.",
-            },
-            {
-                "title": ["Tell me a fun fact", "about the Roman Empire"],
-                "content": "Tell me a random fun fact about the Roman Empire",
+                "content": "I'd like to identify a microscopic organism. Can I upload an image of it for you to examine and tell me what it might be?",
             },
             {
                 "title": [
-                    "Show me a code snippet",
-                    "of a website's sticky header",
+                    "Upload PDFs",
+                    "of scientific research papers",
                 ],
-                "content": "Show me a code snippet of a website's sticky header in CSS and JavaScript.",
+                "content": "I have a PDF of a scientific research paper on a new compound. Can I upload it and get your help in breaking down the chemical structure and explaining its potential applications?",
             },
-            {
-                "title": [
-                    "Explain options trading",
-                    "if I'm familiar with buying and selling stocks",
-                ],
-                "content": "Explain options trading in simple terms if I'm familiar with buying and selling stocks.",
-            },
-            {
-                "title": ["Overcome procrastination", "give me tips"],
-                "content": "Could you start by asking me about instances when I procrastinate the most and then give me some suggestions to overcome it?",
-            },
-            {
-                "title": [
-                    "Grammar check",
-                    "rewrite it for better readability ",
-                ],
-                "content": 'Check the following sentence for grammar and clarity: "[sentence]". Rewrite it for better readability while maintaining its original meaning.',
-            },
+            # {
+            #     "title": [
+            #         "Help me study",
+            #         "vocabulary for a college entrance exam",
+            #     ],
+            #     "content": "Help me study vocabulary: write a sentence for me to fill in the blank, and I'll try to pick the correct option.",
+            # },
+            # {
+            #     "title": [
+            #         "Give me ideas",
+            #         "for what to do with my kids' art",
+            #     ],
+            #     "content": "What are 5 creative things I could do with my kids' art? I don't want to throw them away, but it's also so much clutter.",
+            # },
+            # {
+            #     "title": ["Tell me a fun fact", "about the Roman Empire"],
+            #     "content": "Tell me a random fun fact about the Roman Empire",
+            # },
+            # {
+            #     "title": [
+            #         "Show me a code snippet",
+            #         "of a website's sticky header",
+            #     ],
+            #     "content": "Show me a code snippet of a website's sticky header in CSS and JavaScript.",
+            # },
+            # {
+            #     "title": [
+            #         "Explain options trading",
+            #         "if I'm familiar with buying and selling stocks",
+            #     ],
+            #     "content": "Explain options trading in simple terms if I'm familiar with buying and selling stocks.",
+            # },
+            # {
+            #     "title": ["Overcome procrastination", "give me tips"],
+            #     "content": "Could you start by asking me about instances when I procrastinate the most and then give me some suggestions to overcome it?",
+            # },
+            # {
+            #     "title": [
+            #         "Grammar check",
+            #         "rewrite it for better readability ",
+            #     ],
+            #     "content": 'Check the following sentence for grammar and clarity: "[sentence]". Rewrite it for better readability while maintaining its original meaning.',
+            # },
         ],
     },
 }

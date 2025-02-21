@@ -76,6 +76,8 @@
 	let chatListLoading = false;
 	let allChatsLoaded = false;
 
+	let workspaceDisabled = true;
+
 	let folders = {};
 
 	const initFolders = async () => {
@@ -578,6 +580,7 @@
 					}}
 					draggable="false"
 				>
+					{#if !workspaceDisabled}
 					<div class="self-center">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -598,6 +601,7 @@
 					<div class="flex self-center translate-y-[0.5px]">
 						<div class=" self-center font-medium text-sm font-primary">{$i18n.t('Workspace')}</div>
 					</div>
+					{/if}
 				</a>
 			</div>
 		{/if}
