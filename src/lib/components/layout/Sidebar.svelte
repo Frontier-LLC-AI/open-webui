@@ -76,7 +76,7 @@
 	let chatListLoading = false;
 	let allChatsLoaded = false;
 
-	let workspaceDisabled = true;
+	let workspaceDisabled = $user?.role !== 'admin';
 
 	let folders = {};
 
