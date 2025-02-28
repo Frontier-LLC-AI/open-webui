@@ -589,6 +589,7 @@ def load_oauth_providers():
                 server_metadata_url=OPENID_PROVIDER_URL.value,
                 client_kwargs={
                     "scope": OAUTH_SCOPES.value,
+                    'code_challenge_method': 'S256',
                 },
                 redirect_uri=OPENID_REDIRECT_URI.value,
             )

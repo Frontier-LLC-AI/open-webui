@@ -93,7 +93,7 @@ dependencies = [
     "authlib==1.4.1",
 
     "black==24.8.0",
-    "langfuse==2.44.0",
+    "langfuse",
     "youtube-transcript-api==0.6.3",
     "pytube==15.0.0",
 

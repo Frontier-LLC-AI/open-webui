@@ -162,6 +162,10 @@ COPY --chown=$UID:$GID --from=build /app/build /app/build
 COPY --chown=$UID:$GID --from=build /app/CHANGELOG.md /app/CHANGELOG.md
 COPY --chown=$UID:$GID --from=build /app/package.json /app/package.json
 
+COPY pqa /app/data
+COPY scripts/set_database_url.sh /app/set_database_url.sh
+RUN chmod +x /app/set_database_url.sh
+
 # copy backend files
 COPY --chown=$UID:$GID ./backend .
 
@@ -175,4 +179,4 @@ ARG BUILD_HASH
 ENV WEBUI_BUILD_VERSION=${BUILD_HASH}
 ENV DOCKER=true
 
-CMD [ "bash", "start.sh"]
+CMD ["/app/set_database_url.sh", "bash", "start.sh"]
