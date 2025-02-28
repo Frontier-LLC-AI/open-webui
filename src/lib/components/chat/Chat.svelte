@@ -1980,14 +1980,47 @@
 						</div>
 
 						<div class=" pb-[1rem]">
-							<div class="max-w-6xl pb-2 px-6 mx-auto inset-x-0 text-green-500">
-								{#each selectedModels as item, index}
-									<div class="flex items-center gap-2">
-										{item}
-										<Check />
-									</div>
-								{/each}
-							</div>
+							{#if selectedToolIds.length == 0}
+								<div class="max-w-6xl pb-2 px-6 mx-auto inset-x-0 text-green-500">
+									{#each selectedModels as item, index}
+										{#if item}
+											<div class="flex items-center gap-2">
+												<div class="pl-1">
+													<span class="relative flex size-2"
+														><span
+															class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
+														></span>
+														<span class="relative inline-flex rounded-full size-2 bg-green-500"
+														></span></span
+													>
+												</div>
+												{item}
+												<Check />
+											</div>
+										{/if}
+									{/each}
+								</div>
+							{:else}
+								<div class="max-w-6xl pb-6 px-6 mx-auto inset-x-0 text-green-500">
+									{#each selectedModels as item, index}
+										{#if item}
+											<div class="flex items-center gap-2">
+												<div class="pl-1">
+													<span class="relative flex size-2"
+														><span
+															class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
+														></span>
+														<span class="relative inline-flex rounded-full size-2 bg-green-500"
+														></span></span
+													>
+												</div>
+												{item}
+												<Check />
+											</div>
+										{/if}
+									{/each}
+								</div>
+							{/if}
 							<MessageInput
 								{history}
 								{selectedModels}
