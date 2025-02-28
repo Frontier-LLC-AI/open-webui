@@ -785,7 +785,7 @@
 									/>
 								{/if}
 
-								{#if message?.error}
+								{#if message?.error && !((message?.error?.content ?? message.content).includes('... is not valid JSON'))}
 									<Error content={message?.error?.content ?? message.content} />
 								{/if}
 
