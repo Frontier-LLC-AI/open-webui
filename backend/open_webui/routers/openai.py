@@ -27,7 +27,7 @@ from open_webui.env import (
     BYPASS_MODEL_ACCESS_CONTROL,
 )
 
-from open_webui.constants import ERROR_MESSAGES
+from open_webui.constants import ERROR_MESSAGES, GET_META_INTERNAL_MODEL_CONFIG, META_INTERNAL_GRAPH_API_DOMAIN
 from open_webui.env import ENV, SRC_LOG_LEVELS
 
 
@@ -248,6 +248,8 @@ async def speech(request: Request, user=Depends(get_verified_user)):
 
 
 async def get_all_models_responses(request: Request) -> list:
+    log.info("get_all_models_responses()")
+
     if not request.app.state.config.ENABLE_OPENAI_API:
         return []
 
@@ -265,6 +267,7 @@ async def get_all_models_responses(request: Request) -> list:
             request.app.state.config.OPENAI_API_KEYS += [""] * (num_urls - num_keys)
 
     request_tasks = []
+    meta_internal_mock_responses = []
     for idx, url in enumerate(request.app.state.config.OPENAI_API_BASE_URLS):
         if (str(idx) not in request.app.state.config.OPENAI_API_CONFIGS) and (
             url not in request.app.state.config.OPENAI_API_CONFIGS  # Legacy support
@@ -285,6 +288,13 @@ async def get_all_models_responses(request: Request) -> list:
             enable = api_config.get("enable", True)
             model_ids = api_config.get("model_ids", [])
 
+            if url.startswith("https://graph.facebook.com/"):
+                if enable:
+                    meta_internal_mock_responses = [
+                        GET_META_INTERNAL_MODEL_CONFIG(model_id)
+                        for _idx, model_id in enumerate(model_ids)
+                    ]
+                continue
             if enable:
                 if len(model_ids) == 0:
                     request_tasks.append(
@@ -315,6 +325,7 @@ async def get_all_models_responses(request: Request) -> list:
                 request_tasks.append(asyncio.ensure_future(asyncio.sleep(0, None)))
 
     responses = await asyncio.gather(*request_tasks)
+    responses.append(meta_internal_mock_responses)
 
     for idx, response in enumerate(responses):
         if response:
@@ -339,6 +350,7 @@ async def get_all_models_responses(request: Request) -> list:
 
 
 async def get_filtered_models(models, user):
+    log.info("get_filtered_models()")
     # Filter models based on user access control
     filtered_models = []
     for model in models.get("data", []):
@@ -413,6 +425,7 @@ async def get_all_models(request: Request) -> dict[str, list]:
 async def get_models(
     request: Request, url_idx: Optional[int] = None, user=Depends(get_verified_user)
 ):
+    log.info(f"get_models({url_idx})")
     models = {
         "data": [],
     }
@@ -634,8 +647,31 @@ async def generate_chat_completion(
     if "max_tokens" in payload and "max_completion_tokens" in payload:
         del payload["max_tokens"]
 
+    # Changes required to connect to Meta Graph API properly
+    # 1. Stripping prefix from model_id to derive the actual internal model name
+    # 2. URL is hardcoded as below
+    # 3. Use json instead of payload in the requets
+    is_meta_internal_model = url.startswith(META_INTERNAL_GRAPH_API_DOMAIN)
+
+    def transform_to_meta_internal_model_payload(original_payload: dict, model_id: str|None, access_token: str) -> dict:
+        original_payload["model"] = model_id.split("/")[-1] if model_id else None
+        original_payload["access_token"] = access_token
+        return original_payload
+
+
+    
+
     # Convert the modified body back to JSON
-    payload = json.dumps(payload)
+    payload = transform_to_meta_internal_model_payload(payload, model_id, key) if is_meta_internal_model else json.dumps(payload)
+
+    request_url = (
+        f"{url}/chat/completions" 
+        if not is_meta_internal_model 
+        else f"https://graph.facebook.com/v22.0/uplift_study_metagen_stream_chat_completion" 
+        if isinstance(payload, dict) and payload.get("stream") 
+        else f"https://graph.facebook.com/v22.0/uplift_study_metagen_chat_completion"
+    )
+    
 
     r = None
     session = None
@@ -649,8 +685,9 @@ async def generate_chat_completion(
 
         r = await session.request(
             method="POST",
-            url=f"{url}/chat/completions",
-            data=payload,
+            url=request_url,
+            json=payload if is_meta_internal_model else None,
+            data=payload if not is_meta_internal_model else None,
             headers={
                 "Authorization": f"Bearer {key}",
                 "Content-Type": "application/json",

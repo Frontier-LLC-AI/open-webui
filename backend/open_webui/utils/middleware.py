@@ -1423,7 +1423,11 @@ async def process_chat_response(
 
                         # "data:" is the prefix for each event
                         if not data.startswith("data:"):
-                            continue
+                            # TODO: joelico: Temporary workaround to read Meta Graph API stream response, to remove after fix is pushed
+                            if "chat.completion.chunk" in data:
+                                data = "data: "+data
+                            else:
+                                continue
 
                         # Remove the prefix
                         data = data[len("data:") :].strip()

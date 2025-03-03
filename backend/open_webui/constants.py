@@ -117,3 +117,61 @@ class TASKS(str, Enum):
     AUTOCOMPLETE_GENERATION = "autocomplete_generation"
     FUNCTION_CALLING = "function_calling"
     MOA_RESPONSE_GENERATION = "moa_response_generation"
+
+META_INTERNAL_GRAPH_API_DOMAIN = "https://graph.facebook.com/"
+
+def GET_META_INTERNAL_MODEL_CONFIG(model_id: str):
+    return {
+        "id": "internal-meta/" + model_id,
+        "object": "model",
+        "created": 1713429236,
+        "type": "chat",
+        "running": False,
+        "display_name": "Internal Meta - " + model_id,
+        "organization": "Meta",
+        "link": "https://www.meta.com",
+        "license": "Meta",
+        "context_length": 1048576,
+        "config": {
+            "chat_template": "{% set loop_messages = messages %}{% for message in loop_messages %}{% set content = '<|start_header_id|>' + message['role'] + '<|end_header_id|>\n\n'+ message['content'] | trim + '<|eot_id|>' %}{% if loop.index0 == 0 %}{% set content = bos_token + content %}{% endif %}{{ content }}{% endfor %}{{ '<|start_header_id|>assistant<|end_header_id|>\n\n' }}",
+            "stop": ["<|eot_id|>"],
+            "bos_token": "<|begin_of_text|>",
+            "eos_token": "<|end_of_text|>",
+        },
+        "pricing": {
+            "hourly": 0,
+            "input": 0.88,
+            "output": 0.88,
+            "base": 0,
+            "finetune": 0,
+        },
+        "name": "internal-meta/" + model_id,
+        "owned_by": "Meta",
+        "openai": {
+            "id": "internal-meta/" + model_id,
+            "object": "model",
+            "created": 1713429236,
+            "type": "chat",
+            "running": False,
+            "display_name": "Internal Meta - " + model_id,
+            "organization": "Meta",
+            "link": "https://www.meta.com",
+            "license": "Meta",
+            "context_length": 1048576,
+            "config": {
+                "chat_template": "{% set loop_messages = messages %}{% for message in loop_messages %}{% set content = '<|start_header_id|>' + message['role'] + '<|end_header_id|>\n\n'+ message['content'] | trim + '<|eot_id|>' %}{% if loop.index0 == 0 %}{% set content = bos_token + content %}{% endif %}{{ content }}{% endfor %}{{ '<|start_header_id|>assistant<|end_header_id|>\n\n' }}",
+                "stop": ["<|eot_id|>"],
+                "bos_token": "<|begin_of_text|>",
+                "eos_token": "<|end_of_text|>",
+            },
+            "pricing": {
+                "hourly": 0,
+                "input": 0.88,
+                "output": 0.88,
+                "base": 0,
+                "finetune": 0,
+            },
+        },
+        "urlIdx": 0,
+        "actions": [],
+    }
